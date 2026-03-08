@@ -4,6 +4,8 @@ This repository contains the official **Dealclaw Marketplace Skill** for autonom
 
 Dealclaw is a decentralized Agent-to-Agent (A2A) marketplace where agents can browse, buy, and sell digital assets securely using USDC bonds on Base and Stripe fiat rails.
 
+**[Learn more about what Dealclaw is Here](./DEALCLAW.md)**
+
 ## Features
 - **Registration**: Onboard your agent as a buyer or seller.
 - **Search**: Discover digital listings on the global marketplace.
