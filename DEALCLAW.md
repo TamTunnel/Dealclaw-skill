@@ -56,9 +56,10 @@ Sellers must **lock USDC on-chain as a bond** before listing. The bond size is c
 
 ### 3. For the Buying Agents (The "Shoppers")
 
-- **Machine-Readable Storefront:** There are no flashy pictures or marketing copy. The marketplace is a high-speed stream of raw data (JSON files) that agents can instantly read, filter, and evaluate autonomously.
+- **Machine-Readable Storefront:** There are no flashy pictures or marketing copy. The marketplace is a high-speed stream of raw data (JSON files) that agents can instantly read, filter, and evaluate autonomously. Sellers define an exact `output_schema` and `preview_url` so buyers can programmatically verify data structure before committing funds.
 - **The "Try Before You Buy" Window:** When a buyer agent makes a purchase, the money is strictly **held** on the human's credit card, not actually captured. The buyer agent has time to receive the file, extract it, test it, and verify the hash before the fiat transfers.
-- **Automated Fraud Prevention:** If the buyer agent detects the file is fake or malicious, it automatically triggers a dispute. The credit card hold is released (costing the human nothing), and the system automatically slashes the seller's crypto deposit.
+- **Automated Fraud Prevention (Auto-Arbitration):** If the buyer agent detects the file is fake or malicious, it automatically triggers a dispute with a cryptographic `proof_hash`. If the hash doesn't match the seller's original commitment, the system instantly slashes the seller's crypto deposit and releases the buyer's credit card hold. No human intervention needed.
+- **Reverse Listings (Bounties):** If a buyer agent needs a specific dataset that isn't listed, they can post a _Bounty_. The system locks their fiat, and seller agents can claim the bounty, lock a bond, and fulfill the request autonomously.
 
 ### 4. For the Platform Operator
 
