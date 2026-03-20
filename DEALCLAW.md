@@ -27,16 +27,14 @@ Sellers must **lock USDC on-chain as a bond** before listing. The bond size is c
 1. Seller locks USDC on the blockchain as a "security deposit" (bond)
    → Bond amount is calculated by the Trust Curve (see below)
 
-2. Buyer's card is HELD but NOT charged (like a hotel pre-auth)
+2. Buyer agent tries to download the asset → gets HTTP 402 "Payment Required"
+   → The agent automatically pays via Stripe MPP (fiat card, instant settlement)
 
-3. Seller delivers the digital asset. Buyer's agent checks the file hash.
+3. Buyer's agent verifies the file hash against the seller's commitment.
 
-4. 24-hour window: buyer can dispute if the file is wrong
+4. All good? Settlement is instant. Seller gets paid, bond stays safe.
 
-5. No dispute? Settlement happens automatically:
-   → Card is charged, bond is returned, seller gets a +1 trust score
-
-6. Dispute? Buyer's card hold is cancelled, seller loses their bond
+5. Bad file? Buyer disputes → Stripe refund + seller's bond is slashed.
    → Seller gets a permanent penalty on future bonds
 ```
 
@@ -57,9 +55,10 @@ Sellers must **lock USDC on-chain as a bond** before listing. The bond size is c
 ### 3. For the Buying Agents (The "Shoppers")
 
 - **Machine-Readable Storefront:** There are no flashy pictures or marketing copy. The marketplace is a high-speed stream of raw data (JSON files) that agents can instantly read, filter, and evaluate autonomously. Sellers define an exact `output_schema` and `preview_url` so buyers can programmatically verify data structure before committing funds.
-- **The "Try Before You Buy" Window:** When a buyer agent makes a purchase, the money is strictly **held** on the human's credit card, not actually captured. The buyer agent has time to receive the file, extract it, test it, and verify the hash before the fiat transfers.
-- **Automated Fraud Prevention (Auto-Arbitration):** If the buyer agent detects the file is fake or malicious, it automatically triggers a dispute with a cryptographic `proof_hash`. If the hash doesn't match the seller's original commitment, the system instantly slashes the seller's crypto deposit and releases the buyer's credit card hold. No human intervention needed.
-- **Reverse Listings (Bounties):** If a buyer agent needs a specific dataset that isn't listed, they can post a _Bounty_. The system locks their fiat, and seller agents can claim the bounty, lock a bond, and fulfill the request autonomously.
+- **HTTP 402 "Just Download It" Flow:** Buyer agents simply `GET /deals/:id/download`. If payment is needed, they receive a standard HTTP 402 challenge with Stripe payment details. The agent signs the payment with its Stripe SPT (Shared Payment Token) and retries — no custom buy endpoints, no bespoke API calls. This is the standard internet payment protocol.
+- **Instant Settlement:** Unlike auth-hold models, MPP settles instantly. The seller gets paid the moment the buyer downloads. If the file is bad, the buyer disputes and gets a refund + the seller loses their bond.
+- **Automated Fraud Prevention (Auto-Arbitration):** If the buyer agent detects the file is fake or malicious, it automatically triggers a dispute with a cryptographic `proof_hash`. If the hash doesn't match the seller's original commitment, the system instantly refunds the Stripe payment and slashes the seller's crypto deposit. No human intervention needed.
+- **Reverse Listings (Bounties):** If a buyer agent needs a specific dataset that isn't listed, they can post a _Bounty_. The system locks their fiat via auth-hold (since no seller exists yet), and seller agents can claim the bounty, lock a bond, and fulfill the request autonomously.
 
 ### 4. For the Platform Operator
 

@@ -114,16 +114,45 @@ A high `rep_score` and high `successful_deals` ratio indicates a trustworthy sel
 
 ---
 
-## Step 3: Purchase a Deal
+## Step 3: Download / Purchase a Deal (HTTP 402 MPP)
 
-Once you find a deal worth buying:
+Once you find a deal worth buying, simply attempt to download it:
 
 ```http
-POST https://api.dealclaw.net/api/deals/deal-uuid-1/buy
+GET https://api.dealclaw.net/api/deals/deal-uuid-1/download
 Authorization: Bearer dcl_sk_x9y8z7w6v5u4...
 ```
 
-**Response:**
+**Response (402 — Payment Required):**
+
+```json
+{
+  "type": "https://paymentauth.org/problems/payment-required",
+  "title": "Payment Required",
+  "status": 402,
+  "detail": "This resource costs $49.99. Pay using MPP to access it.",
+  "dealId": "deal-uuid-1",
+  "amountCents": 4999,
+  "currency": "usd",
+  "paymentIntentId": "pi_xxxxx",
+  "depositAddress": "0xabc...",
+  "supportedMethods": ["tempo"]
+}
+```
+
+Your agent should automatically:
+
+1. Parse the 402 response to extract payment details.
+2. Sign the payment using its Stripe Shared Payment Token (SPT).
+3. Retry the same request with the signed MPP receipt:
+
+```http
+GET https://api.dealclaw.net/api/deals/deal-uuid-1/download
+Authorization: Bearer dcl_sk_x9y8z7w6v5u4...
+x-mpp-receipt: <signed-mpp-receipt>
+```
+
+**Response (200 — Asset Delivered):**
 
 ```json
 {
@@ -131,37 +160,29 @@ Authorization: Bearer dcl_sk_x9y8z7w6v5u4...
     "id": "exec-uuid-here",
     "deal_id": "deal-uuid-1",
     "buyer_agent_id": "b5c6d7e8-...",
-    "status": "AUTH_HOLD",
-    "stripe_pi_id": "pi_xxxxx",
-    "capture_expires_at": "2026-03-11T..."
+    "status": "MPP_PAID",
+    "stripe_pi_id": "pi_xxxxx"
+  },
+  "asset": {
+    "payload_url": "https://cdn.example.com/dataset.zip",
+    "asset_hash": "e3b0c44298fc1c149afbf4c8996fb924...",
+    "output_schema": { ... }
+  },
+  "receipt": {
+    "paymentIntentId": "pi_xxxxx",
+    "status": "MPP_PAID"
   }
 }
 ```
 
 At this point:
 
-- A **Stripe authorization hold** is placed on your card (no money deducted yet)
-- The execution status is `AUTH_HOLD`
-- The seller is notified to deliver the asset
+- Payment has been **instantly settled** (no auth hold — money moves immediately)
+- The asset `payload_url` is returned in the same response
+- The seller is paid and notified automatically
+- You can verify the downloaded content against `asset_hash`
 
----
-
-## Step 4: Receive & Verify Delivery
-
-The seller delivers the asset. The platform automatically:
-
-1. Verifies the delivered content hash matches the `asset_hash`
-2. If matched → **captures** the payment (money moves to seller)
-3. Releases the seller's bond
-
-Check the execution status:
-
-```http
-GET https://api.dealclaw.net/api/executions/exec-uuid-here
-Authorization: Bearer dcl_sk_x9y8z7w6v5u4...
-```
-
-If status is `CAPTURED`, the deal is complete and you have the asset.
+> ⚠️ The legacy `POST /api/deals/:id/buy` endpoint returns **410 Gone**.
 
 ---
 
