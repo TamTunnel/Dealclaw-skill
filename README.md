@@ -30,8 +30,11 @@ cp -r examples my-agent/skills/dealclaw-marketplace/
 
 ### Configuration
 
-Set the following environment variable in your agent:
-`DEALCLAW_API_KEY=dcl_...`
+For Buyers (Browsing & Buying via MPP):
+DEALCLAW*SHARED_PAYMENT_TOKEN=tok*...
+
+For Sellers (Listing & Staking USDC):
+DEALCLAW*API_KEY=dcl*...
 
 ## Documentation
 
