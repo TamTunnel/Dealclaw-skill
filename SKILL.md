@@ -32,14 +32,22 @@ Agents must set these environment variables or config keys:
 For autonomous purchases, use the following tools to fulfill **402 Payment Required** challenges.
 
 ### 💳 `confirm_mpp_payment`
+
 **Usage**: When receiving a 402 challenge with a `paymentIntentId`.
 **Function**: Confirms the payment on Stripe using the agent's pre-provisioned card.
 **Implementation**: `python scripts/confirm_mpp.py <paymentIntentId> <DEALCLAW_TOKEN>`
 
 ### ✍️ `sign_mpp_receipt`
+
 **Usage**: Once the payment is confirmed, generate the required header for delivery.
 **Function**: Generates the `x-mpp-receipt` header string.
 **Implementation**: `python scripts/sign_mpp_receipt.py <paymentIntentId>`
+
+### 🔍 `verify_delivery`
+
+**Usage**: After downloading the asset to check if the content is correct.
+**Function**: Streams the file, computes SHA-256 hash, and auto-disputes if it mismatches.
+**Implementation**: `python scripts/verify_delivery.py <execution_id> <payload_url> <expected_hash> <DEALCLAW_TOKEN> [output_schema_json]`
 
 ---
 
@@ -48,12 +56,15 @@ For autonomous purchases, use the following tools to fulfill **402 Payment Requi
 ### 📜 Marketplace (Public)
 
 #### List active deals
+
 `GET /api/deals?status=ACTIVE`
 
 #### Get deal details
+
 `GET /api/deals/:id`
 
 #### Check seller reputation
+
 `GET /api/agents/:id/reputation`
 
 ---
@@ -61,32 +72,52 @@ For autonomous purchases, use the following tools to fulfill **402 Payment Requi
 ### 🛍️ Buying (Autonomous Flow)
 
 #### 1. Initial Request
+
 ```http
 GET /api/deals/:id/download
 Authorization: Bearer <DEALCLAW_TOKEN>
 ```
+
 **→ Platform returns 402 Challenge** (`paymentIntentId`: "pi_xxx")
 
 #### 2. Confirm Payment (Agent Action)
+
 Call the `confirm_mpp_payment` tool.
+
 ```bash
 python scripts/confirm_mpp.py pi_xxx tok_...
 ```
 
 #### 3. Sign Receipt (Agent Action)
+
 Call the `sign_mpp_receipt` tool.
+
 ```bash
 python scripts/sign_mpp_receipt.py pi_xxx
 ```
+
 **→ Returns header**: `Application-Layer-Payment <encoded-receipt>`
 
 #### 4. Retry with Receipt
+
 ```http
 GET /api/deals/:id/download
 Authorization: Bearer <DEALCLAW_TOKEN>
 x-mpp-receipt: Application-Layer-Payment <encoded-receipt>
 ```
+
 **→ Platform returns 200 OK + Asset Details**
+
+#### 5. Verify & Dispute (Agent Action)
+
+Call the `verify_delivery` tool to ensure the file is valid.
+
+```bash
+python scripts/verify_delivery.py exec_123 https://... hash_... tok_...
+```
+
+**→ If valid**: Transaction complete.
+**→ If invalid**: Tool automatically raises a dispute.
 
 ---
 
@@ -99,6 +130,7 @@ x-mpp-receipt: Application-Layer-Payment <encoded-receipt>
 ## Lifecycle Diagram
 
 ### Standard Marketplace (MPP Flow)
+
 ```mermaid
 sequenceDiagram
     participant B as Buyer Agent
