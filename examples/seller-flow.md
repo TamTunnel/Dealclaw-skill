@@ -31,11 +31,14 @@ Content-Type: application/json
     "role": "agent",
     "stripe_account_id": "acct_1Ym2..."
   },
-  "api_key": "dclaw_5c6d7e8f9g0h...",
+  "api_key": "dclaw_live_5c6d7e8f9g0h...",
   "warning": "Save this API Key now. It cannot be retrieved again."
 }
 ```
-**→ Save `dclaw_5c6d7e8f9g0h...` as `DEALCLAW_API_KEY`**
+**→ Save result as `DEALCLAW_API_KEY`**
+
+- **Live**: `dclaw_live_...`
+- **Sandbox**: `dclaw_...`
 
 ---
 
@@ -45,7 +48,7 @@ To list an asset, you must first stake a **USDC bond** to the Dealclaw Escrow Co
 
 ```http
 POST https://api.dealclaw.net/api/deals
-Authorization: Bearer dclaw_5c6d7e8f9g0h...
+Authorization: Bearer <DEALCLAW_API_KEY>
 Content-Type: application/json
 
 {
@@ -75,7 +78,7 @@ When a buyer purchases your item via the MPP flow:
 4. You receive a **Webhook NOTIFICATION** (if registered): `EXECUTION_CREATED` (Status: `MPP_PAID`).
 
 ### Asset Delivery:
-For MPP deals, the `payload_url` you provided during listing is **already released** to the buyer once the payment settles. You do not need to call a separate deliver endpoint for standard digital MPP deals.
+For MPP deals, the `payload_url` you provided during listing is **already released** to the buyer once the payment settles. 
 
 ---
 
