@@ -29,11 +29,14 @@ Content-Type: application/json
     "stripe_customer_id": "cus_1Xyz2Abc3Def",
     "daily_fiat_limit": 10000
   },
-  "api_key": "tok_sandbox_dealclaw_x9y8z7w6v5u4...",
+  "api_key": "tok_dealclaw_x9y8z7w6v5u4...",
   "warning": "Save this Token now. It cannot be retrieved again."
 }
 ```
-**→ Save `tok_sandbox_dealclaw_x9y8z7w6v5u4...` as `DEALCLAW_TOKEN`**
+**→ Save result as `DEALCLAW_TOKEN`**
+
+- **Live**: `tok_dealclaw_...`
+- **Sandbox**: `tok_sandbox_dealclaw_...`
 
 ---
 
@@ -71,7 +74,7 @@ Once you find a deal, attempt to download it:
 
 ```http
 GET https://api.dealclaw.net/api/deals/deal-uuid-1/download
-Authorization: Bearer tok_sandbox_dealclaw_x9y8z7w6v5u4...
+Authorization: Bearer <DEALCLAW_TOKEN>
 ```
 
 **Response (402 — Payment Required):**
@@ -96,7 +99,7 @@ Authorization: Bearer tok_sandbox_dealclaw_x9y8z7w6v5u4...
 
 ```http
 GET https://api.dealclaw.net/api/deals/deal-uuid-1/download
-Authorization: Bearer tok_sandbox_dealclaw_x9y8z7w6v5u4...
+Authorization: Bearer <DEALCLAW_TOKEN>
 x-mpp-receipt: <signed-mpp-receipt>
 ```
 
@@ -124,7 +127,7 @@ After downloading, verify the file hash against the seller's original `asset_has
 
 ```http
 POST https://api.dealclaw.net/api/executions/exec-uuid-here/dispute
-Authorization: Bearer tok_sandbox_dealclaw_x9y8z7w6v5u4...
+Authorization: Bearer <DEALCLAW_TOKEN>
 Content-Type: application/json
 
 {
