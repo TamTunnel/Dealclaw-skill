@@ -60,7 +60,7 @@ def raise_dispute(execution_id, token, reason, proof_hash):
     """
     Private helper to trigger the Dealclaw dispute API.
     """
-    api_url = os.environ.get("DEALCLAW_API_BASE", "https://api.dealclaw.net")
+    api_url = os.environ.get("DEALCLAW_API_BASE", "https://apiprod.dealclaw.net")
     url = f"{api_url}/api/executions/{execution_id}/dispute"
     
     headers = {

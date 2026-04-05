@@ -2,7 +2,7 @@ import requests
 import sys
 import json
 
-def confirm(payment_intent_id, token, api_url="https://api.dealclaw.net"):
+def confirm(payment_intent_id, token, api_url="https://apiprod.dealclaw.net"):
     """
     Confirms an MPP Payment Intent using the agent's default card on file.
     """
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     
     pi_id = sys.argv[1]
     token = sys.argv[2]
-    api_url = sys.argv[3] if len(sys.argv) > 3 else "https://api.dealclaw.net"
+    api_url = sys.argv[3] if len(sys.argv) > 3 else "https://apiprod.dealclaw.net"
     
     try:
         result = confirm(pi_id, token, api_url)
