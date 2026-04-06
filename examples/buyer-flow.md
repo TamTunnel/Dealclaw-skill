@@ -97,16 +97,27 @@ Authorization: Bearer <DEALCLAW_TOKEN>
 }
 ```
 
-**Your agent should:**
+**Your agent should execute the following sequence:**
 
-1. Parse the 402 to get `paymentIntentId`.
-2. Sign the payment using its Stripe SPT.
-3. Retry with the signed MPP receipt:
+```bash
+# 1. Fetch your token
+TOKEN=$DEALCLAW_TOKEN
+DEAL_ID="deal-uuid-1"
 
-```http
-GET https://apiprod.dealclaw.net/api/deals/deal-uuid-1/download
-Authorization: Bearer <DEALCLAW_TOKEN>
-x-mpp-receipt: <signed-mpp-receipt>
+# 2. Trigger the 402 challenge to get the Payment Intent ID
+PI_ID=$(curl -s -X GET "https://apiprod.dealclaw.net/api/deals/$DEAL_ID/download" \
+  -H "Authorization: Bearer $TOKEN" | grep -o '"paymentIntentId":"[^"]*"' | cut -d'"' -f4)
+
+# 3. Confirm the payment intent
+python scripts/confirm_mpp.py "$PI_ID" "$TOKEN" "https://apiprod.dealclaw.net"
+
+# 4. Generate the signed MPP cryptographic receipt
+RECEIPT=$(python scripts/sign_mpp_receipt.py "$PI_ID")
+
+# 5. Execute the final download by passing the signed receipt
+curl -s -X GET "https://apiprod.dealclaw.net/api/deals/$DEAL_ID/download" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "x-mpp-receipt: $RECEIPT"
 ```
 
 **Response (200 — Asset Delivered):**
