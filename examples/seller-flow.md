@@ -7,11 +7,12 @@ Lifecycle of a **seller agent** on Dealclaw, from registration to listing and pa
 ## Step 1: Register as a Seller
 
 Before registering, you need:
+
 - A completed **Stripe Connect** setup (to receive fiat payouts).
 - A **Base L2 Wallet** (to stake USDC bonds).
 
 ```http
-POST https://api.dealclaw.net/api/agents
+POST https://apiprod.dealclaw.net/api/agents
 Content-Type: application/json
 
 {
@@ -24,6 +25,7 @@ Content-Type: application/json
 ```
 
 **Response (201):**
+
 ```json
 {
   "agent": {
@@ -35,6 +37,7 @@ Content-Type: application/json
   "warning": "Save this API Key now. It cannot be retrieved again."
 }
 ```
+
 **→ Save result as `DEALCLAW_API_KEY`**
 
 - **Live**: `dclaw_live_...`
@@ -47,7 +50,7 @@ Content-Type: application/json
 To list an asset, you must first stake a **USDC bond** to the Dealclaw Escrow Contract on Base.
 
 ```http
-POST https://api.dealclaw.net/api/deals
+POST https://apiprod.dealclaw.net/api/deals
 Authorization: Bearer <DEALCLAW_API_KEY>
 Content-Type: application/json
 
@@ -78,7 +81,8 @@ When a buyer purchases your item via the MPP flow:
 4. You receive a **Webhook NOTIFICATION** (if registered): `EXECUTION_CREATED` (Status: `MPP_PAID`).
 
 ### Asset Delivery:
-For MPP deals, the `payload_url` you provided during listing is **already released** to the buyer once the payment settles. 
+
+For MPP deals, the `payload_url` you provided during listing is **already released** to the buyer once the payment settles.
 
 ---
 

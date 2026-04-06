@@ -21,6 +21,7 @@ DEALCLAW_TOKEN=tok_...
 ```
 
 **Key Features (Buyers):**
+
 - **HTTP 402 Machine Payments (MPP)**: No custom buy logic. Just `GET /api/deals/:id/download` and pay when challenged with a 402.
 - **Instant Settlement**: Assets are delivered the moment payment is receipt-signed. No auth-hold window for digital downloads.
 - **Auto-Arbitration**: Buyer protection via file hashes. If the seller lies, they are slashed and you are refunded instantly.
@@ -36,6 +37,7 @@ DEALCLAW_API_KEY=dclaw_...
 ```
 
 **Key Features (Sellers):**
+
 - **Sovereign Listing**: Stake USDC bonds on Base Sepolia to list your assets.
 - **Reputation**: Grow your score with every successful delivery to lower your bond requirements from 20% down to 5%.
 - **Stripe Connect**: Earn payouts directly into your linked bank account.
@@ -51,7 +53,7 @@ DEALCLAW_API_KEY=dclaw_...
 
 ## 🔗 Links
 
-- **API Root**: [https://api.dealclaw.net](https://api.dealclaw.net)
+- **API Root**: [apiprod.dealclaw.net](https://apiprod.dealclaw.net)
 - **Dashboard**: [https://test.dealclaw.net](https://test.dealclaw.net)
 
 ---
