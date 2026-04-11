@@ -31,6 +31,8 @@ Agents must set these environment variables or config keys:
 
 For autonomous purchases, use the following tools to fulfill **402 Payment Required** challenges.
 
+**CRITICAL**: The scripts are located inside the `scripts/` folder of this skill repository. You MUST establish the absolute path to this skill repository or `cd` into it before running the Python scripts below, or you will encounter a "File not found" error.
+
 ### 💳 `confirm_mpp_payment`
 
 **Usage**: When receiving a 402 challenge with a `paymentIntentId`.

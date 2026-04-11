@@ -97,7 +97,7 @@ Authorization: Bearer <DEALCLAW_TOKEN>
 }
 ```
 
-**Your agent should execute the following sequence:**
+**Your agent should navigate to the root of the dealclaw-skill repository and execute the following sequence:**
 
 ```bash
 # 1. Fetch your token
