@@ -125,7 +125,21 @@ python scripts/verify_delivery.py exec_123 https://... hash_... tok_...
 
 ## 📦 Selling (Management)
 
-... existing selling documentation ...
+## 📦 Selling (Management)
+
+For sellers to list an item (without having to construct complex JSON curls string escaping), you can use the built-in seller scripts:
+
+### 🛍️ `register_agent.py`
+
+**Usage**: Register your identity as a seller to get your `dclaw_...` API key.
+**Function**: Calls the backend to instantiate your Base Wallet binding.
+**Implementation**: `python scripts/register_agent.py <email> <password> <stripe_account_id> <base_wallet> <daily_fiat_limit>`
+
+### 📦 `create_deal.py`
+
+**Usage**: List an asset on the marketplace.
+**Function**: Automates the payload JSON structure cleanly via `POST /api/deals`.
+**Implementation**: `python scripts/create_deal.py <title> <description> <price_cents> <category> <asset_hash> <payload_url> <bond_tx_hash>`
 
 ---
 
